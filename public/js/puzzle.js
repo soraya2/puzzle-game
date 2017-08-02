@@ -1,90 +1,102 @@
-var anImageElement2 = document.querySelector('.puzzle-background');
-let image = new Image();
-image.onload = cutImageUp;
-image.src = './../img/monks.jpg';
+{
+    // const anImageElement2 = document.querySelector('.puzzle-background');
+    const image = new Image();
+    image.onload = cutImageUp;
+    image.src = './../img/monks.jpg';
 
-    var positions = [0, 164];
+    let positions = [0, 164];
 
     let numbers = [];
+    // Using canvas api top cut the img up in pieces
+    function cutImageUp() {
+        let imagePieces = [];
+        let imgPieceWidth = 250;
+        let imgPieceHeigth = 250;
+        let PuzzleColls = 2;
+        let PuzzleRows = 2;
+        let index = 0;
+        let allPositions = positions.length;
+        let i, j;
 
-function cutImageUp() {
-    let imagePieces = [];
-    let widthOfOnePiece = 250;
-    let heightOfOnePiece = 250;
-    let numColsToCut = 2;
-    let numRowsToCut = 2;
-    let index = 0;
-    let n = positions.length;
-    let i, j;
-
-    for(i = 0; i < n; i++){
-        for(j = 0; j < n; j++){
-
-         numbers.push([positions[i], positions[j]]);
-            // console.log(positions[i] + ", " +  positions[j]);
-            // console.log(numbers);
+    // create all posible combinations
+        for(i = 0; i < allPositions; i++){
+            for(j = 0; j < allPositions; j++){
+            // array with all posible positions
+             numbers.push({top: positions[i], left: positions[j]});
+            }
         }
+
+        // slice img into 4 pieces 2 rows and 2 collumns
+
+        //TODO: rename loop variables
+        for(let x = 0; x < PuzzleColls; ++x) {
+            for(let y = 0; y < PuzzleRows; ++y) {
+                let canvas = document.createElement('canvas');
+                let context = canvas.getContext('2d');
+                canvas.width = imgPieceWidth;
+                canvas.height = imgPieceHeigth;
+                context.drawImage(image, x * imgPieceWidth, y * imgPieceHeigth, imgPieceWidth, imgPieceHeigth, 0, 0, canvas.width, canvas.height);
+                imagePieces.push(canvas.toDataURL());
+            }
+        }
+
+         // randomly place images
+
+        function ImgPosition(imgObects) {
+
+        let position = shuffle(positionNumbers);
+
+            //every puzzle piece is placed in differend order
+            imgObects.map(function (img) {
+        let imagestyle = img.style;
+                imagestyle.position = "absolute";
+                imagestyle.top = position[index].top+'px';
+                imagestyle.left = position[index].left+'px';
+
+                index++;
+            });
+          }
+
+        setBackgroundImage();
+    }
+
+    function setBackgroundImage() {
+
+        let puzzlePiece1 = document.querySelectorAll('.pieces');
+        let allPuzzlePieces = Array.prototype.slice.call(puzzlePiece1);
+
+        ImgPosition(allPuzzlePieces);
+
+        allPuzzlePieces.map(function (puzzlePiece, i) {
+            puzzlePiece.style.backgroundImage = 'url('+imagePieces[i]+')';
+            puzzlePiece.style.backgroundRepeat = 'no-repeat';
+            puzzlePiece.style.backgroundSize = 'cover';
+
+        });
+    }
+
+    function shuffle (data) {
+
+      let arrayLength = data.length, t, i;
+
+        //TODO: make sure the puzzle never solves from the start
+        // While there remain elements to shuffle…
+        while (arrayLength) {
+
+            // Pick a remaining element…
+            i = Math.floor(Math.random() * arrayLength--);
+
+            // And swap it with the current element.
+            dataLength = data[arrayLength];
+
+            data[arrayLength] = data[i];
+
+            data[i] = dataLength;
+        }
+
+      return data;
     }
 
 
-// slice img into 4 pieces
-    for(let x = 0; x < numColsToCut; ++x) {
-        for(let y = 0; y < numRowsToCut; ++y) {
-            let canvas = document.createElement('canvas');
-            let context = canvas.getContext('2d');
-            canvas.width = widthOfOnePiece;
-            canvas.height = heightOfOnePiece;
-            context.drawImage(image, x * widthOfOnePiece, y * heightOfOnePiece, widthOfOnePiece, heightOfOnePiece, 0, 0, canvas.width, canvas.height);
-            imagePieces.push(canvas.toDataURL());
-        }
-    }
-
-
-     for (let i = 0; i < imagePieces.length; i++) {
-
-        let puzzlePiece1 = document.querySelectorAll('.pieces')[i];
-        puzzlePiece1.style.backgroundImage = 'url('+imagePieces[i]+')';
-        puzzlePiece1.style.backgroundRepeat = 'no-repeat';
-        puzzlePiece1.style.backgroundSize = 'cover';
-
-        ImgRandomPosition(document.querySelectorAll('.pieces')[i]);
-
-     }
-     // randomly place images
-
-// array with all posible positions
-
-      function ImgRandomPosition(imgObj) {
-
-       // console.log(numbers);
-
-       //// random waarde uit the array probleem (het random nummer is niet altijd uniek waardoor je to dubbele posities krijgt)
-       // var left = numbers[Math.floor(Math.random() * numbers.length)];
-       // var top = numbers[Math.floor(Math.random() * numbers.length)];
-       // console.log(left[0]);
-          // var left = Math.floor(Math.random() * ((anImageElement2.offsetWidth - 1) - imgObj.offsetWidth));
-
-          // var top = Math.floor(Math.random() * ((anImageElement2.offsetHeight - 1) - imgObj.offsetHeight));
-          var imagestyle = imgObj.style;
-          imagestyle.position = "absolute";
-
-
-           // numbers[i]
-           var j = 0;
-           // var test = numbers[i].length;
-
-           for (var j = 0; j < numbers.length; j++) {
-              imagestyle.top = numbers[index][j]+'px';
-              imagestyle.left = numbers[index][j]+'px';
-
-           console.log(index ,j);
-           }
-           console.log(index);
-
-        index++;
-
-          // console.log(left,top);
-
-      }
 
 }
