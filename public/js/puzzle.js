@@ -14,15 +14,15 @@ function cutImageUp() {
     let numColsToCut = 2;
     let numRowsToCut = 2;
     let index = 0;
-    let n = positions.length;
+    let allPositions = positions.length;
     let i, j;
 
-    for(i = 0; i < n; i++){
-        for(j = 0; j < n; j++){
 
+// create all posible combinations
+    for(i = 0; i < allPositions; i++){
+        for(j = 0; j < allPositions; j++){
+        // array with all posible positions
          numbers.push([positions[i], positions[j]]);
-            // console.log(positions[i] + ", " +  positions[j]);
-            // console.log(numbers);
         }
     }
 
@@ -40,50 +40,47 @@ function cutImageUp() {
     }
 
 
-     for (let i = 0; i < imagePieces.length; i++) {
+    let puzzlePiece1 = document.querySelectorAll('.pieces');
 
-        let puzzlePiece1 = document.querySelectorAll('.pieces')[i];
-        puzzlePiece1.style.backgroundImage = 'url('+imagePieces[i]+')';
-        puzzlePiece1.style.backgroundRepeat = 'no-repeat';
-        puzzlePiece1.style.backgroundSize = 'cover';
+    var allPuzzlePieces = Array.prototype.slice.call(puzzlePiece1);
 
-        ImgRandomPosition(document.querySelectorAll('.pieces')[i]);
+    allPuzzlePieces.map(function (puzzlePiece, i) {
+        puzzlePiece.style.backgroundImage = 'url('+imagePieces[i]+')';
+        puzzlePiece.style.backgroundRepeat = 'no-repeat';
+        puzzlePiece.style.backgroundSize = 'cover';
 
-     }
+        ImgPosition(puzzlePiece);
+
+    });
      // randomly place images
 
-// array with all posible positions
 
-      function ImgRandomPosition(imgObj) {
 
-       // console.log(numbers);
+      function ImgPosition(imgObj) {
+        let imagestyle = imgObj.style;
 
-       //// random waarde uit the array probleem (het random nummer is niet altijd uniek waardoor je to dubbele posities krijgt)
-       // var left = numbers[Math.floor(Math.random() * numbers.length)];
-       // var top = numbers[Math.floor(Math.random() * numbers.length)];
-       // console.log(left[0]);
+
+        // math random is messing with array data!!
+       var left = numbers[Math.floor(Math.random() * numbers.length)];
+       var top = numbers[Math.floor(Math.random() * numbers.length)];
+
           // var left = Math.floor(Math.random() * ((anImageElement2.offsetWidth - 1) - imgObj.offsetWidth));
 
           // var top = Math.floor(Math.random() * ((anImageElement2.offsetHeight - 1) - imgObj.offsetHeight));
-          var imagestyle = imgObj.style;
-          imagestyle.position = "absolute";
+          // var imagestyle = imgObj.style;
+          // imagestyle.position = "absolute";
+
+          console.log(left, numbers);
 
 
-           // numbers[i]
-           var j = 0;
-           // var test = numbers[i].length;
 
-           for (var j = 0; j < numbers.length; j++) {
-              imagestyle.top = numbers[index][j]+'px';
-              imagestyle.left = numbers[index][j]+'px';
+        //every puzzle piece is placed in differend order
+        imagestyle.position = "absolute";
+        imagestyle.top = numbers[index][0]+'px';
+        imagestyle.left = numbers[index][1]+'px';
 
-           console.log(index ,j);
-           }
-           console.log(index);
 
         index++;
-
-          // console.log(left,top);
 
       }
 
