@@ -1,81 +1,117 @@
 {
-    // const anImageElement2 = document.querySelector('.puzzle-background');
     const image = new Image();
-    image.onload = cutImageUp;
     image.src = './../img/monks.jpg';
+    let index2 = 30;
 
-    let positions = [0, 164];
+    const init = () => {
+        const puzzleBackground = document.querySelector(".puzzle-background");
+        puzzleBackground.addEventListener("click", moveObjects, false);
+        image.onload = cutImageUp;
 
-    let numbers = [];
+    };
+
+    const moveObjects = (e) => {
+        if (e.target !== e.currentTarget) {
+            index2+=10;
+            console.log(index2);
+            e.target.style.left = index2+'px';
+            // if(){};
+            // e.target.style.top = 20+'px';
+
+            // e.target.style.left = index +'px';
+
+        }
+        e.stopPropagation();
+    };
+
     // Using canvas api top cut the img up in pieces
-    function cutImageUp() {
-        let imagePieces = [];
-        let imgPieceWidth = 250;
-        let imgPieceHeigth = 250;
-        let PuzzleColls = 2;
-        let PuzzleRows = 2;
-        let index = 0;
-        let allPositions = positions.length;
-        let i, j;
+    const positionCombinations = () => {
+        let positionNumbers = [],
+            positions = [0, 164],
+            allPositions = positions.length,
+            i,
+            j;
 
-    // create all posible combinations
         for(i = 0; i < allPositions; i++){
             for(j = 0; j < allPositions; j++){
             // array with all posible positions
-             numbers.push({top: positions[i], left: positions[j]});
+             positionNumbers.push({top: positions[i], left: positions[j]});
             }
         }
 
-        // slice img into 4 pieces 2 rows and 2 collumns
+        return shuffle(positionNumbers);
+    };
 
-        //TODO: rename loop variables
-        for(let x = 0; x < PuzzleColls; ++x) {
-            for(let y = 0; y < PuzzleRows; ++y) {
-                let canvas = document.createElement('canvas');
-                let context = canvas.getContext('2d');
+    // Using canvas api top cut the img up in pieces
+    const cutImageUp = () => {
+        let imagePieces = [],
+            imgPieceWidth = 250,
+            imgPieceHeigth = 250,
+            PuzzleColls = 2,
+            PuzzleRows = 2,
+            canvas,
+            context,
+            y,
+            x;
+
+        /*TODO:
+            - Rename loop variables
+            - using map instead of for loops (and remove variables x and y)
+        */
+        // slice img into 4 pieces 2 rows and 2 collumns
+        for(x = 0; x < PuzzleColls; x++) {
+            for(y = 0; y < PuzzleRows; y++) {
+
+                canvas = document.createElement('canvas');
+                context = canvas.getContext('2d');
                 canvas.width = imgPieceWidth;
                 canvas.height = imgPieceHeigth;
+
                 context.drawImage(image, x * imgPieceWidth, y * imgPieceHeigth, imgPieceWidth, imgPieceHeigth, 0, 0, canvas.width, canvas.height);
+
                 imagePieces.push(canvas.toDataURL());
+
             }
         }
+        setBackgroundImage(imagePieces);
+    };
 
-         // randomly place images
 
-        function ImgPosition(imgObects) {
 
-        let position = shuffle(positionNumbers);
+    const imgPosition = (imgObects, positionNumbers) => {
 
-            //every puzzle piece is placed in differend order
-            imgObects.map(function (img) {
-        let imagestyle = img.style;
-                imagestyle.position = "absolute";
-                imagestyle.top = position[index].top+'px';
-                imagestyle.left = position[index].left+'px';
+        let imagestyle,
+        index = 0;
+        //every puzzle piece is placed in differend order
+        return imgObects.map((img) => {
+            imagestyle = img.style;
 
-                index++;
-            });
-          }
+            imagestyle.position = "absolute";
+            imagestyle.top = positionNumbers[index].top+'px';
+            imagestyle.left = positionNumbers[index].left+'px';
 
-        setBackgroundImage();
-    }
+            index++;
+        });
+      };
 
-    function setBackgroundImage() {
+    const setBackgroundImage = (imgURL) => {
 
         let puzzlePiece1 = document.querySelectorAll('.pieces');
         let allPuzzlePieces = Array.prototype.slice.call(puzzlePiece1);
 
-        ImgPosition(allPuzzlePieces);
+        allPuzzlePieces.map((puzzlePiece, i) => {
 
-        allPuzzlePieces.map(function (puzzlePiece, i) {
-            puzzlePiece.style.backgroundImage = 'url('+imagePieces[i]+')';
+            puzzlePiece.style.backgroundImage = 'url('+imgURL[i]+')';
             puzzlePiece.style.backgroundRepeat = 'no-repeat';
             puzzlePiece.style.backgroundSize = 'cover';
 
         });
-    }
 
-    function shuffle (data) {
+        return imgPosition(allPuzzlePieces, positionCombinations());
+    };
+
+
+    const shuffle = (data) => {
 
       let arrayLength = data.length, t, i;
 
@@ -95,8 +131,7 @@
         }
 
       return data;
-    }
+    };
 
-
-
+    init();
 }
