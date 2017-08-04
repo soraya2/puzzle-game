@@ -13,16 +13,19 @@
     const moveObjects = (e) => {
         if (e.target !== e.currentTarget) {
             index2+=10;
-            console.log(index2);
-            e.target.style.left = index2+'px';
-            // if(){};
-            // e.target.style.top = 20+'px';
+            // console.log(index2);
+            // e.target.style.left = index2+'px';
 
-            // e.target.style.left = index +'px';
+            moveElement( e.target);
+
+
 
         }
         e.stopPropagation();
     };
+
+
+
 
     // Using canvas api top cut the img up in pieces
     const positionCombinations = () => {
@@ -100,6 +103,7 @@
         let allPuzzlePieces = Array.prototype.slice.call(puzzlePiece1);
 
         allPuzzlePieces.map((puzzlePiece, i) => {
+            console.log(puzzlePiece)
 
             puzzlePiece.style.backgroundImage = 'url('+imgURL[i]+')';
             puzzlePiece.style.backgroundRepeat = 'no-repeat';
@@ -132,6 +136,46 @@
 
       return data;
     };
+
+    const moveElement = (element) => {
+        let puzzlePiece1 = document.querySelectorAll('.pieces');
+        let allPuzzlePieces = Array.prototype.slice.call(puzzlePiece1);
+        let puzzleRight1 = element.getBoundingClientRect(),
+            puzzleLeft1 = element.getBoundingClientRect(),
+            puzzleBottom1 = element.getBoundingClientRect(),
+            puzzleTop1 = element.getBoundingClientRect();
+
+
+        console.log(element.getBoundingClientRect());
+
+            allPuzzlePieces.map((puzzlePiece, i) => {
+            let index = i;
+
+                if(index < allPuzzlePieces.length){
+
+                let puzzleRight2 = allPuzzlePieces[index].getBoundingClientRect(),
+                    puzzleLeft2 = allPuzzlePieces[index].getBoundingClientRect(),
+                    puzzleBottom2 = allPuzzlePieces[index].getBoundingClientRect(),
+                    puzzleTop2 = allPuzzlePieces[index].getBoundingClientRect();
+                            console.log(element.offsetTop);
+
+                    if (allPuzzlePieces[index].classList[0] !== element.classList[0]) {
+                        if (!puzzleRight1.right < puzzleRight2.left + puzzleRight2.width &&
+                           !puzzleRight1.right + puzzleRight1.width > puzzleRight2.left &&
+                           !puzzleRight1.bottom < puzzleRight2.top + puzzleRight2.height &&
+                           !puzzleRight1.height + puzzleRight1.bottom > puzzleRight2.top) {
+                            // collision detected!
+                        console.log('collision');
+                        }else{
+                        }
+                        // console.log(allPuzzlePieces[i].getBoundingClientRect(), i);
+                    }
+                }
+            });
+
+    };
+
+
 
     init();
 }
