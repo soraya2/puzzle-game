@@ -2,9 +2,10 @@
     const image = new Image();
     let index2 = 30;
     let allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
-    const puzzleBackground = document.querySelector(".puzzle-background");
-    let maxPosition = allPuzzlePieces[0].getBoundingClientRect().width + Number(window.getComputedStyle(allPuzzlePieces[0], null).margin.split('px')[0]);
+    let maxPosition = 164;
+    // allPuzzlePieces[0].getBoundingClientRect().width + Number(window.getComputedStyle(allPuzzlePieces[0], null).margin.split('px')[0])
     let minPosition = 0;
+    const puzzleBackground = document.querySelector(".puzzle-background");
 
     const init = () => {
         puzzleBackground.addEventListener("click", moveObjects, false);
@@ -74,6 +75,7 @@
             yPosition,
             xPosition;
 
+
         /*TODO:
             - Rename loop variables
             - using map instead of for loops (and remove variables x and y)
@@ -114,13 +116,18 @@
 
     const setBackgroundImage = (imgURL) => {
 
-        let allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
+        // let allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
 
-        allPuzzlePieces.map((puzzlePiece, i) => {
+        imgURL.map((img, i) => {
+            let li = document.createElement('li');
 
-            puzzlePiece.style.backgroundImage = 'url('+imgURL[i]+')';
-            puzzlePiece.style.backgroundRepeat = 'no-repeat';
-            puzzlePiece.style.backgroundSize = 'cover';
+            li.setAttribute('class',`piece-${i} pieces`);
+
+            puzzleBackground.appendChild(li);
+
+            li.style.backgroundImage = 'url('+img+')';
+            li.style.backgroundRepeat = 'no-repeat';
+            li.style.backgroundSize = 'cover';
 
         });
 
@@ -215,6 +222,7 @@
         li.setAttribute('class','item');
 
         ul.appendChild(li);
+
 
         // t = document.createTextNode(element);
 
