@@ -1,7 +1,10 @@
 .puzzle-background {
-    max-width: 20.4em;
-    height: 20.4em;
-    // background-color: green;
+    list-style-type: none;
+    display: flex;
+    position: relative;
+    // width: 20.813em;
+    // height: 20.813em;
+    overflow: hidden;
     border: 0.1rem solid black;
 
 
@@ -11,9 +14,16 @@
         display: flex;
         position: relative;
         li {
-            height: 10em;
-            width: 10em;
-            margin: 0.1em;
+            margin: 0.1rem 0.1rem 0.1rem 0.1rem ;
+            cursor: pointer;
+            position: absolute;
+            -webkit-transition: transform 0.25s;
+            transition: transform 0.25s;
+            background: url('') no-repeat center center;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
         }
     }
 
