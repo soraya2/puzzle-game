@@ -231,3 +231,193 @@
 
     init();
 }
+
+
+
+
+
+                boardParts[i][j].xLoc = (tileCount - 1) - i;
+                    boardParts[i][j].yLoc = (tileCount - 1) - j;
+
+
+
+
+    // const increasePosition4 = (ix) => {
+
+    //   if(ix > 0){
+    //       if( positionD <= 250 ) {
+
+
+    //         positionD+= tileSize;
+
+
+    //     }else{
+
+    //         positionD = 0;
+    //         if(positionXD < boardSize){
+    //             positionXD+=tileSize;
+    //         }
+    //     }
+
+    //   }
+
+
+    //   return correctAnswers.push({x: positionXD, y: positionD, elementNumber: ix});
+
+
+    // };
+
+
+
+
+
+
+
+    // function compareAnswers(array1, array2) {
+
+    //   // This block will make the array of indexed that array b contains a elements
+    //   let compareArrays = array1.filter(function(value, index, obj) {
+
+    //        let index2 = array2.findIndex( function (element) {
+
+    //               return value.x=== element.x && value.y === element.y && value.elmentNumber === element.elmentNumber;
+    //        });
+
+    //     return index2 > -1;
+
+    //   });
+
+    //   return (compareArrays.length !== array1.length) ?  'not equal' :  'equal';
+    // }
+const checkSolved = (currentElement) => {
+  let flag = true;
+    currentElement.map((piece)=> {
+
+
+    // allPuzzlePieces[index].style.transform = `translate(${boardParts[i][j].x}px, ${boardParts[i][j].y}px)`;
+        // console.log(getTransformValue(piece));
+
+    });
+
+  // solved = flag;
+    // console.log(solved);
+
+};
+
+
+
+    let boardSize,
+        boardParts,
+        allPuzzlePieces,
+        tileCount = Number(scale.value),
+        tileSize,
+        increase = false,
+        position = 0;
+        clickLoc = new Object(),    // current element
+        clickLoc.x = 0;
+        clickLoc.y = 0;
+        emptyLoc = new Object(),    // empty spot where the img can go
+        emptyLoc.x = 0,
+        emptyLoc.y = 0,
+        solved = false,
+        correctAnswers=[];
+        let positionD = 0,
+            positionXD = 0;
+
+
+    // const increasePosition4 = (ix) => {
+
+    //   if(ix > 0){
+    //       if( positionD <= 250 ) {
+
+
+    //         positionD+= tileSize;
+
+
+    //     }else{
+
+    //         positionD = 0;
+    //         if(positionXD < boardSize){
+    //             positionXD+=tileSize;
+    //         }
+    //     }
+
+    //   }
+
+
+    //   return correctAnswers.push({x: positionXD, y: positionD, elementNumber: ix});
+
+
+    // };
+
+
+
+    const setTilePosition = (boardParts) =>{
+
+        for (var i = allPuzzlePieces.length - 1; i >= 0; i--) {
+
+                allPuzzlePieces[i].style.transform = `translate(${boardParts.x}px, ${boardParts.y}px)`;
+                createAnswers(i);
+        }
+
+
+    };
+
+
+    const createAnswers = (amount) => {
+
+    if(amount > 0 ){
+        if( positionD <= (boardSize/2) && tileCount > 2 ) {
+
+            positionD+= tileSize;
+
+        }else{
+
+                positionD = 0;
+                console.log(tileSize === (boardSize/2) , positionXD ,(boardSize/2) , amount ,(allPuzzlePieces.length/2))
+
+                if(positionXD <= (boardSize/2) && tileSize !== (boardSize/2)){
+
+                    positionXD+=tileSize;
+
+                }else if(tileSize === (boardSize/2)  && positionXD <= (boardSize/2) && amount < (allPuzzlePieces.length/2)){
+                     positionXD+=tileSize;
+
+
+
+                }else if (amount >= (allPuzzlePieces.length/2)){
+                    if(positionXD ===0 ){
+                        positionXD+=tileSize;
+                    }else{
+                     positionXD = 0;
+
+                    }
+
+                }
+            }
+        }
+
+        correctAnswers.push({x: positionXD, y: positionD, elementNumber: amount});
+
+    };
+
+
+
+    const increasePositionY = ()=>{
+                if(positionX === boardSize && positionY !== boardSize){
+            return positionY += boardSize/tileCount;
+        }
+    };
+
+
+const checkSolved = () => {
+  let flag = true;
+
+
+
+    allPuzzlePieces.map((piece, i)=> {
+    getTransformValue(piece);
+
+  console.log(getTransformValue(piece), i, correctAnswers);
+
+    });

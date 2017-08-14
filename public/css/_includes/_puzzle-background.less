@@ -1,24 +1,22 @@
-.puzzle-background {
-    list-style-type: none;
+.main-background{
     display: flex;
-    position: relative;
-    // width: 20.813em;
-    // height: 20.813em;
-    overflow: hidden;
-    border: 0.1rem solid black;
-
-
-}
-    ul {
+    align-items: center;
+    flex-direction: column;
+    background: #73625A;
+    min-height: 100vh;
+    .puzzle-background {
         list-style-type: none;
-        display: flex;
         position: relative;
+        overflow: hidden;
+        border: 1rem solid #282320;
+
         li {
-            margin: 0.1rem 0.1rem 0.1rem 0.1rem ;
             cursor: pointer;
+            opacity: 1;
+            visibility: visible;
             position: absolute;
-            -webkit-transition: transform 0.25s;
-            transition: transform 0.25s;
+            -webkit-transition: transform 0.25s, opacity 0.25s ;
+            transition: all 0.25s;
             background: url('') no-repeat center center;
             -webkit-background-size: cover;
             -moz-background-size: cover;
@@ -27,7 +25,20 @@
         }
     }
 
-    .piece-4 {
-        display: none;
+    form{
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: center;
 
+        label{
+            margin: 0 0.5rem;
+
+        }
     }
+}
+
+.main-background li.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(375px, 375px)
+}

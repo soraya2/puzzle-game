@@ -1,30 +1,30 @@
 {
-    const image = new Image();
-    const puzzleBackground = document.querySelector(".puzzle-background");
-    let index2 = 30;
-    // let allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
-    let maxPosition = 164;
-    // allPuzzlePieces[0].getBoundingClientRect().width + Number(window.getComputedStyle(allPuzzlePieces[0], null).margin.split('px')[0])
-    let minPosition = 0;
-    let boardSize;
-    let scale = document.getElementById('scale');
-    let tileCount = scale.value;
-    let increase = false;
-    let position = 0;
+    // global variables
+    const image = new Image(),
+          puzzleBackground = document.querySelector(".puzzle-background"),
+          scale = document.getElementById('scale');
 
-// current element
-    var clickLoc = new Object;
-    clickLoc.x = 0;
-    clickLoc.y = 0;
+    let boardSize,
+        boardParts,
+        allPuzzlePieces,
+        tileCount = Number(scale.value),
+        tileSize,
+        increase = false,
+        solved = false,
+        positionX = 0,
+        correctAnswers=[],
+        currentPositions =[],
+        positionD = 0,
+        positionXD = 0,
+        posY = 0,
+        posX = 0,
+        clickLoc = new Object(),    // current element
+        emptyLoc = new Object();    // empty spot where the img can go
+        clickLoc.x = 0;
+        clickLoc.y = 0;
+        emptyLoc.x = 0;
+        emptyLoc.y = 0;
 
-// empty spot where the img can go
-    let emptyLoc = new Object;
-    emptyLoc.x = 0;
-    emptyLoc.y = 0;
-
-    let solved = false;
-
-    // let boardParts;
 
     const init = () => {
         puzzleBackground.addEventListener("click", moveObjects, false);
@@ -32,113 +32,53 @@
 
         image.onload = () => {
             boardSize = image.width;
-            puzzleBackground.style.height =  `${boardSize+1}px`;
-            puzzleBackground.style.width= `${boardSize+1}px`;
-            setBoard();
-            // imgPosition();
+            puzzleBackground.style.height =  `${boardSize}px`;
+            puzzleBackground.style.width= `${boardSize}px`;
 
+            setBoard();
         };
 
         image.src = './../img/monks.jpg';
     };
 
-
-
-
-
     const setBoard = () => {
+        tileCount = Number(scale.value);
+        tileSize = boardSize / tileCount;
+        correctAnswers.length = 0;
 
         if (puzzleBackground) {
             while (puzzleBackground.firstChild) {
-                  puzzleBackground.removeChild(puzzleBackground.firstChild);
+                puzzleBackground.removeChild(puzzleBackground.firstChild);
             }
         }
 
-        tileCount = scale.value;
-        tileSize = boardSize / tileCount;
         cutImageUp();
         imgPosition();
     };
 
+    const getTransformValue = (myElement) => {
+        let style = window.getComputedStyle(myElement);
+        let matrix = new WebKitCSSMatrix(style.webkitTransform);
 
+        return {
 
+            translateX: matrix.m41,
+            translateY: matrix.m42
 
-    // Calculate all posible positions
-    // const positionCombinations = () => {
-    //     let positionNumbers = [],
-    //         positions = [minPosition, maxPosition],
-    //         allPositions = positions.length,
-    //         i,
-    //         j;
-
-    //     for(i = 0; i < allPositions; i++){
-    //         for(j = 0; j < allPositions; j++){
-    //         // array with all posible positions
-    //          positionNumbers.push({top: positions[i], left: positions[j]});
-    //         }
-    //     }
-
-    //     return shuffleImages(positionNumbers);
-    // };
-
-
-
-
-
-   //  const getPosition = (element) => {
-   //      let xPosition = 0;
-   //      let yPosition = 0;
-
-   //      if(element){
-
-   //        xPosition +=  (Math.round(element.getBoundingClientRect().left) - element.scrollLeft + element.clientLeft);
-   //        yPosition += (Math.round(element.getBoundingClientRect().top) - element.scrollTop + element.clientTop);
-
-   //        element = element.offsetParent;
-   //      }
-
-   //      return {
-   //        x: Math.abs(xPosition),
-   //        y: Math.abs(yPosition)
-   //      };
-   // };
-
-
-
-
-
-    // const getTranslate = (myElement) => {
-    //     let style = window.getComputedStyle(myElement);
-    //     let matrix = new WebKitCSSMatrix(style.webkitTransform);
-
-    //     return {
-
-    //         translateX: matrix.m41,
-    //         translateY: matrix.m42
-
-    //     };
-    // };
-
-
-
-
+        };
+    };
 
     // Using canvas api top cut the img up in pieces
     const cutImageUp = () => {
         let imagePieces = [],
             PuzzleColls = tileCount,
             PuzzleRows = tileCount,
-            imgPieceWidth = boardSize/tileCount,//img width should be equal to picture width / PuzzleColls
-            imgPieceHeigth = boardSize/tileCount,//img height should be equal to picture width / PuzzleRows
+            imgPieceWidth = tileSize,//img width should be equal to picture width / PuzzleColls
+            imgPieceHeigth = tileSize,//img height should be equal to picture width / PuzzleRows
             canvas,
             context,
             yPosition,
             xPosition;
-
-        /*TODO:
-            - Rename loop variables
-            - using map instead of for loops (and remove variables x and y)
-        */
 
         // slice img into 4 pieces 2 rows and 2 collumns
         for(xPosition = 0; xPosition < PuzzleColls; xPosition++) {
@@ -159,237 +99,239 @@
         setBackgroundImage(imagePieces);
     };
 
-function increasePosition(check){
-    if(increase === true && position < boardSize){
+    const increasePosition = (check) =>{
+        if(increase === true && positionX !== boardSize){
 
-        position += boardSize/tileCount;
+            positionX += boardSize/tileCount;
 
-    }else{
-        position = boardSize/tileCount;
+        }else{
+            positionX = boardSize/tileCount;
 
-    }
-    return position;
-}
+        }
+        return positionX;
+    };
 
-//     const incrementY = (function(n) {
-//   return function() {
+    const createAnswers = (amount, positionY) => {
 
-//     if(n < boardSize){
-//         n += boardSize/tileCount;
+        let test = !(amount % 2);
 
-//         // console.log(boardSize/tileCount);
-//     }else{
-//         n = n;
+        if(amount > 1 ){
 
-//     }
-//     // console.log(n)
-//     return n;
-//   };
-// }(0));
+            if( posY <= (boardSize/2) && tileCount>= 4){
+                posY+= tileSize;
 
+            }else if(tileCount>= 4){
 
+                posY = 0;
+                posX+=tileSize;
 
-    const imgPosition = (imgObects, positionNumbers) => {
-        let allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
+            }else{
+
+                if(test) {
+
+                    posY+=tileSize;
+                }else{
+                    posY = 0;
+                    posX+=tileSize;
+
+                }
+            }
+
+        }
+
+        correctAnswers.push({x: posX, y: posY, elementNumber: amount});
+    };
+
+    const imgPosition = () => {
         let images,
             positionY = 0,
-            index = 0,
-            ix = 0;
-            let size =0;
+            index = 1,
+            size = 0,
+            i,
+            j;
 
+            allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
 
-            boardParts = new Array('hello');
+            boardParts = new Array(tileCount);
 
-
-        const placeImages = () => {
-
-
-        };
-
-            for (let i = 0; i < tileCount; ++i) {
-
+            for (i = 0; i < tileCount; ++i) {
 
                 boardParts[i] = new Array(tileCount);
-// check to use if images can move or not
-                for (let j = 0; j < tileCount; ++j) {
-                    boardParts[i][j] = new Object;
-                        size = boardSize/tileCount;
-                        // position
 
-                    if(position === boardSize && positionY !== boardSize){
-                        positionY += boardSize/tileCount;
-                    }
+                for (j = 0; j < tileCount; ++j) {
 
-
-
+                    size = boardSize/tileCount;
                     increase = true;
+                    boardParts[i][j] = new Object;
+
+                    if(positionX === boardSize && positionY !== boardSize){
+
+                        positionY += size;
+
+                    }
 
                     boardParts[i][j].x = increasePosition() - size;
                     boardParts[i][j].y = positionY;
+                    boardParts[i][j].xLoc = (tileCount-1) - i;
+                    boardParts[i][j].yLoc = (tileCount-1) - j;
 
+                    if(index < allPuzzlePieces.length){
 
-                    // boardParts[i][j].position = 0;
-                    // var x = boardParts[i][j].x;
-                    // var y = boardParts[i][j].y;
+                        allPuzzlePieces[index].style.transform = `translate(${boardParts[i][j].x}px, ${boardParts[i][j].y}px)`;
 
-                    placeImages(position);
-                    // console.log(position > boardSize/tileCount ,position < boardSize,  position ,boardSize)
-            allPuzzlePieces[index].style.transform = `translate(${boardParts[i][j].x}px, ${boardParts[i][j].y}px)`;
-                index++;
-            // console.log(allPuzzlePieces.length);
+                    }
+                    if(index > 0){
+
+                        createAnswers(index, positionY);
+
+                        index++;
+                    }
+
                 }
             }
-            emptyLoc.x = boardParts[tileCount - 1][tileCount - 1].x;
-            emptyLoc.y = boardParts[tileCount - 1][tileCount - 1].y;
-            // emptyLoc.position =
-            // empty start altijd met 00
-            // console.log(emptyLoc.y, emptyLoc.x);
+
+            resetValues();
+            correctAnswers.shift();
+
+      };
+
+    const resetValues = () =>{
+            emptyLoc.x = boardParts[tileCount-1][tileCount-1].x / tileSize;
+            emptyLoc.y = boardParts[tileCount - 1][tileCount - 1].y / tileSize;
+            emptyLoc.locationX = boardParts[tileCount - 1][tileCount - 1].y;
+            emptyLoc.locationY = boardParts[tileCount - 1][tileCount - 1].x;
 
             solved = false;
             increase = false;
-            positionY = boardSize/tileCount;
-            position = 0;
+            positionY = 0;
+            positionX = 0;
+            positionD = 0;
+            positionXD = 0;
+            position=0;
+            posY = 0;
+            posX = 0;
+            currentPositions = [];
 
-
-            // images = imgObects.pop();
-
-        //every puzzle piece is placed in differend order
-        // return allPuzzlePieces.map((img) => {
-
-        //     index++;
-        // });
-      };
-
-
-
+    };
 
     const setBackgroundImage = (imgURL) => {
-
-        let allPuzzlePieces = [],
-            li;
+        let li,
+            allPuzzlePieces = [],
+            images = imgURL.slice(1, imgURL.length);
 
         imgURL.map((img, i) => {
             li = document.createElement('li');
-
+            puzzleBackground.appendChild(li);
+            hiddenElement = document.querySelector('li');
+            hiddenElement.classList.add('hide');
 
             li.setAttribute('class',`piece-${i} pieces`);
 
-            puzzleBackground.appendChild(li);
-
             li.style.backgroundImage = 'url('+img+')';
-            li.style.backgroundRepeat = 'no-repeat';
-            li.style.backgroundSize = 'cover';
-            li.style.height =  `${boardSize/tileCount}px`;
-            li.style.width= `${boardSize/tileCount}px`;
-
-            allPuzzlePieces.push(li);
-
+            li.style.height =  `${boardSize/tileCount-1}px`;
+            li.style.width= `${boardSize/tileCount-1}px`;
 
         });
-
-        return (
-
-            // imgPosition(allPuzzlePieces, positionCombinations()),
-            allPuzzlePieces.length = 0
-
-
-            );
     };
 
+    const moveTile = (element, toLoc, fromLoc, newLocaton) => {
+        if (!solved) {
 
-
-
-
-    // const shuffleImages = (data) => {
-
-    //     let arrayLength = data.length, t, i;
-
-    //     //TODO: make sure the puzzle never solves from the start
-    //     // While there remain elements to shuffle…
-    //     while (arrayLength) {
-
-    //         // Pick a remaining element…
-    //         i = Math.floor(Math.random() * arrayLength--);
-
-    //         // And swap it with the current element.
-    //         dataLength = data[arrayLength];
-
-    //         data[arrayLength] = data[i];
-
-    //         data[i] = dataLength;
-    //     }
-
-    //   return data;
-    // };
-
-
-
-
-
-    const moveImage = (element) => {
-
-        // let imagestyle,conditionFilter1,conditionFilter2,
-        //     currentPositionY = Number(getTranslate(element).translateY),
-        //     currentPositionX = Number(getTranslate(element).translateX);
-
-        // const move = (img) => {
-
-        //     conditionFilter1 = img.filter((puzzlePieces) => {
-
-        //           return getPosition(element).y !== getPosition(puzzlePieces).y && getPosition(element).x !== getPosition(puzzlePieces).x;
-        //     });
-
-        //     conditionFilter2 = img.filter((puzzlePieces) => {
-
-        //           return getPosition(element).y === getPosition(puzzlePieces).y && getPosition(element).x !== getPosition(puzzlePieces).x;
-        //     });
-
-
-        //   if(getPosition(element).x > getPosition(conditionFilter1[0]).x && conditionFilter2.length === 0) {
-
-        //           return element.style.transform = `translate(${minPosition}px,${currentPositionY}px`;
-
-        //   } else if (getPosition(element).x < getPosition(conditionFilter1[0]).x && conditionFilter2.length === 0){
-
-        //           return element.style.transform = `translate(${maxPosition}px,${currentPositionY}px)`;
-
-        //     }else if (getPosition(element).x < getPosition(conditionFilter1[0]).x && conditionFilter2.length > 0) {
-
-
-        //          if (currentPositionY >= maxPosition ) {
-
-        //                  return element.style.transform = `translate(${minPosition}px,${currentPositionX}px)`;
-        //          } else {
-
-        //               return element.style.transform = `translate(${currentPositionX}px,${maxPosition}px)`;
-        //          }
-
-        //     }else if(conditionFilter2.length > 0 && conditionFilter1.length > 0){
-
-        //         if (currentPositionY >= maxPosition) {
-
-        //               return element.style.transform = `translate(${maxPosition}px,${minPosition}px)`;
-
-        //          } else {
-
-        //               return element.style.transform = `translate(${maxPosition}px,${maxPosition}px)`;
-        //          }
-        //     }
-        // };
-
-        return move(allPuzzlePieces);
+            element.style.transform = `translate(${emptyLoc.locationX}px, ${emptyLoc.locationY}px)`;
+            toLoc.x = fromLoc.x;
+            toLoc.y = fromLoc.y;
+            emptyLoc.locationX = newLocaton.translateX;
+            emptyLoc.locationY = newLocaton.translateY;
+        }
     };
-
-
-
-
 
     const moveObjects = (e) => {
+        let checksum;
+
         if (e.target !== e.currentTarget) {
-                  moveImage(e.target);
+
+            clickLoc.x = getTransformValue(e.target).translateX / tileSize;
+            clickLoc.y = getTransformValue(e.target).translateY / tileSize;
+
+            if (checkDistance(clickLoc.x , clickLoc.y, emptyLoc.x, emptyLoc.y) ===  1) {
+
+                moveTile(e.target, emptyLoc, clickLoc, getTransformValue(e.target));
+
+                setTimeout(function(){
+                    checkSolved();
+                }, 400);
+            }
         }
         e.stopPropagation();
     };
+
+    // check to see if images can move or not
+    const checkDistance = (fromX, fromY, toX, toY) => {
+
+        return Math.abs(fromX - toX) + Math.abs(fromY - toY);
+    };
+
+    const compareAnswers = (array1, array2) => {
+
+      // This block will make the array of indexed that array b contains a elements
+        let compareArrays = array1.filter(function(value, index, obj) {
+
+            let index2 = array2.findIndex( function (element) {
+
+                  return value.x=== element.x && value.y === element.y && value.elementNumber === element.elementNumber;
+            });
+
+            return index2 > -1;
+
+        });
+
+      //TODO
+      return (compareArrays.length !== array1.length) ? false : true;
+    };
+
+
+    const checkSolved = () => {
+
+        i = 1;
+
+        allPuzzlePieces.map((puzzlePiece) => {
+
+            currentPositions.push({x: getTransformValue(puzzlePiece).translateX, y: getTransformValue(puzzlePiece).translateY, elementNumber: i });
+            i++;
+        });
+        // remove the first element because this element is hidden
+        currentPositions.shift();
+
+        solved = compareAnswers(currentPositions, correctAnswers);
+
+        if(solved){
+
+            hiddenElement.classList.remove('hide');
+
+            allPuzzlePieces.map((puzzlePiece) => {
+                puzzlePiece.style.height =  `${boardSize/tileCount}px`;
+                puzzlePiece.style.width= `${boardSize/tileCount}px`;
+            });
+        }
+
+        currentPositions = [];
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
