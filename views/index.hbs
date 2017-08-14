@@ -1,10 +1,19 @@
-<h1>{{title}}</h1>
+    <main class="main-background">
+        <h1>{{title}}</h1>
 
-     <ul class="puzzle-background">
-        <li class="piece-1 pieces"></li>
-        <li class="piece-2 pieces"></li>
-        <li class="piece-3 pieces"></li>
-        <li class="piece-4 pieces"></li>
-     </ul>
+        <ul class="puzzle-background">
 
-<script src="/js/puzzle.js"></script>
+        </ul>
+
+        <div id="slider">
+            <form>
+              <label>Easy</label>
+              <input type="range" id="scale" value="4" min="2" max="6" step="2">
+              <label>Hard</label>
+            </form>
+        </div>
+        <canvas id="confetti"></canvas>
+    </main>
+
+    <script src="/js/puzzle.js"></script>
+

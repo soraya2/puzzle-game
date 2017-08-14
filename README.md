@@ -1,12 +1,29 @@
 # 2 dimentional puzzle
+I wanted to challenge myself to make a 2 dimentional puzzle without libraries or frameworks.
 
+Im always looking for ways to improve my work so if you have any suggestions feel free to create an issue.
 
-## Features
--
--
--
+## Live link
+https://puzzle-game-lnvrebtyuv.now.sh/
+
+## Getting started
+
+  - Clone this repository
+
+  - Install packages
+    To install the packages run npm install in the commandline;\
+
+    ```
+     npm install
+
+    ```
+  - Start node app
+
+    ```
+     npm start
+
+    ```
 
 ## Wishlist
-[]
-[]
-[]
+[] Add confetti
+

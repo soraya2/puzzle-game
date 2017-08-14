@@ -1,23 +1,52 @@
-.puzzle-background {
-    max-width: 20.4em;
-    height: 20.4em;
-    // background-color: green;
-    border: 0.1rem solid black;
+.main-background{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background: #73625A;
+    min-height: 100vh;
 
-
-}
-    ul {
-        list-style-type: none;
+    form {
+        margin: 0.5rem 0;
         display: flex;
-        position: relative;
-        li {
-            height: 10em;
-            width: 10em;
-            margin: 0.1em;
+        align-items: center;
+
+        label{
+            margin: 0 0.5rem;
+
         }
     }
+}
 
-    .piece-4 {
-        display: none;
+.puzzle-background {
+    list-style-type: none;
+    position: relative;
+    overflow: hidden;
+    border: 1rem solid #282320;
 
+    li {
+        cursor: pointer;
+        opacity: 1;
+        visibility: visible;
+        position: absolute;
+        -webkit-transition: transform 0.25s, opacity 0.25s ;
+        transition: transform 0.25s, opacity 0.25s;
+        background: url('') no-repeat center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
     }
+    .hide-puzzle {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(375px, 375px)
+    }
+}
+
+#confetti {
+    position: absolute;
+}
+
+.hide {
+   display: none;
+}
