@@ -42,7 +42,7 @@
     };
 
     const setBoard = () => {
-        tileCount = Number(scale.value);
+        tileCount = (Number(scale.value)===6) ? 5: Number(scale.value);
         tileSize = boardSize / tileCount;
         correctAnswers.length = 0;
 
@@ -54,18 +54,6 @@
 
         cutImageUp();
         imgPosition();
-    };
-
-    const getTransformValue = (myElement) => {
-        let style = window.getComputedStyle(myElement);
-        let matrix = new WebKitCSSMatrix(style.webkitTransform);
-
-        return {
-
-            translateX: matrix.m41,
-            translateY: matrix.m42
-
-        };
     };
 
     // Using canvas api top cut the img up in pieces
@@ -92,126 +80,10 @@
                 context.drawImage(image, xPosition * imgPieceWidth, yPosition * imgPieceHeigth, imgPieceWidth, imgPieceHeigth, 0, 0, canvas.width, canvas.height);
 
                 imagePieces.push(canvas.toDataURL());
-
             }
         }
 
         setBackgroundImage(imagePieces);
-    };
-
-    const increasePosition = (check) =>{
-        if(increase === true && positionX !== boardSize){
-
-            positionX += boardSize/tileCount;
-
-        }else{
-            positionX = boardSize/tileCount;
-
-        }
-        return positionX;
-    };
-
-    const createAnswers = (amount, positionY) => {
-
-        let test = !(amount % 2);
-
-        if(amount > 1 ){
-
-            if( posY <= (boardSize/2) && tileCount>= 4){
-                posY+= tileSize;
-
-            }else if(tileCount>= 4){
-
-                posY = 0;
-                posX+=tileSize;
-
-            }else{
-
-                if(test) {
-
-                    posY+=tileSize;
-                }else{
-                    posY = 0;
-                    posX+=tileSize;
-
-                }
-            }
-
-        }
-
-        correctAnswers.push({x: posX, y: posY, elementNumber: amount});
-    };
-
-    const imgPosition = () => {
-        let images,
-            positionY = 0,
-            index = 1,
-            size = 0,
-            i,
-            j;
-
-            allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
-
-            boardParts = new Array(tileCount);
-
-            for (i = 0; i < tileCount; ++i) {
-
-                boardParts[i] = new Array(tileCount);
-
-                for (j = 0; j < tileCount; ++j) {
-
-                    size = boardSize/tileCount;
-                    increase = true;
-                    boardParts[i][j] = new Object;
-
-                    if(positionX === boardSize && positionY !== boardSize){
-
-                        positionY += size;
-
-                    }
-
-                    boardParts[i][j].x = increasePosition() - size;
-                    boardParts[i][j].y = positionY;
-                    boardParts[i][j].xLoc = (tileCount-1) - i;
-                    boardParts[i][j].yLoc = (tileCount-1) - j;
-
-                    if(index < allPuzzlePieces.length){
-
-                        allPuzzlePieces[index].style.transform = `translate(${boardParts[i][j].x}px, ${boardParts[i][j].y}px)`;
-
-                    }
-                    if(index > 0){
-
-                        createAnswers(index, positionY);
-
-                        index++;
-                    }
-
-                }
-            }
-
-            resetValues();
-            correctAnswers.shift();
-
-      };
-
-    const resetValues = () =>{
-            emptyLoc.x = boardParts[tileCount-1][tileCount-1].x / tileSize;
-            emptyLoc.y = boardParts[tileCount - 1][tileCount - 1].y / tileSize;
-            emptyLoc.locationX = boardParts[tileCount - 1][tileCount - 1].y;
-            emptyLoc.locationY = boardParts[tileCount - 1][tileCount - 1].x;
-
-            solved = false;
-            increase = false;
-            positionY = 0;
-            positionX = 0;
-            positionD = 0;
-            positionXD = 0;
-            position=0;
-            posY = 0;
-            posX = 0;
-            currentPositions = [];
-
     };
 
     const setBackgroundImage = (imgURL) => {
@@ -221,20 +93,137 @@
 
         imgURL.map((img, i) => {
             li = document.createElement('li');
+
             puzzleBackground.appendChild(li);
+
             hiddenElement = document.querySelector('li');
-            hiddenElement.classList.add('hide');
+            hiddenElement.classList.add('hide-puzzle');
 
             li.setAttribute('class',`piece-${i} pieces`);
-
             li.style.backgroundImage = 'url('+img+')';
-            li.style.height =  `${boardSize/tileCount-1}px`;
-            li.style.width= `${boardSize/tileCount-1}px`;
+            li.style.height =  `${tileSize-1}px`;
+            li.style.width = `${tileSize-1}px`;
 
         });
     };
 
-    const moveTile = (element, toLoc, fromLoc, newLocaton) => {
+    const increasePositionX = (check) =>{
+        (increase === true && positionX !== boardSize) ?
+            (positionX += tileSize) :
+            (positionX = tileSize);
+
+        return positionX;
+    };
+
+    const createAnswers = (amount, positionY) =>{
+
+        if(amount > 1 ){
+
+            if( posY <= (boardSize/2) && tileCount >= 4){
+                posY += tileSize;
+
+            }else if(tileCount>= 4){
+
+                posY = 0;
+                posX += tileSize;
+
+            }else{
+
+                if(!(amount % 2)) {
+
+                    posY += tileSize;
+
+                }else{
+
+                    posY = 0;
+                    posX += tileSize;
+                }
+            }
+        }
+
+        correctAnswers.push({x: posX, y: posY, elementNumber: amount});
+    };
+
+    const imgPosition = () =>{
+        let images,
+            positionY = 0,
+            index = 1,
+            i,
+            j;
+
+            allPuzzlePieces = Array.prototype.slice.call(document.querySelectorAll('.pieces'));
+            boardParts = new Array(tileCount);
+
+            // multidimentional array that holds the empty location and all x and y positions of all puzzle pieces
+            for (i = 0; i < tileCount; ++i) {
+
+                boardParts[i] = new Array(tileCount);
+
+                for (j = 0; j < tileCount; ++j) {
+                    increase = true;
+                    boardParts[i][j] = new Object();
+
+                    if(positionX === boardSize && positionY !== boardSize){
+
+                        positionY += tileSize;
+
+                    }
+
+                    boardParts[i][j].x = increasePositionX() - tileSize;
+                    boardParts[i][j].y = positionY;
+                    boardParts[i][j].xLoc = (tileCount-1) - i;
+                    boardParts[i][j].yLoc = (tileCount-1) - j;
+
+                    if(index < allPuzzlePieces.length){
+
+                        allPuzzlePieces[index].style.transform = `translate(${boardParts[i][j].x}px, ${boardParts[i][j].y}px)`;
+
+                    }
+
+                    if(index > 0){
+
+                        createAnswers(index, positionY);
+
+                        index++;
+                    }
+                }
+            }
+
+            resetValues();
+            correctAnswers.shift();
+      };
+
+    const resetValues = () =>{
+        emptyLoc.x = boardParts[tileCount-1][tileCount-1].x / tileSize;
+        emptyLoc.y = boardParts[tileCount - 1][tileCount - 1].y / tileSize;
+        emptyLoc.locationX = boardParts[tileCount - 1][tileCount - 1].y;
+        emptyLoc.locationY = boardParts[tileCount - 1][tileCount - 1].x;
+
+        solved = false;
+        increase = false;
+        positionY = 0;
+        positionX = 0;
+        positionD = 0;
+        positionXD = 0;
+        position = 0;
+        posY = 0;
+        posX = 0;
+        currentPositions = [];
+    };
+
+    const getTransformValue = (myElement) =>{
+        let style = window.getComputedStyle(myElement);
+        let matrix = new WebKitCSSMatrix(style.webkitTransform);
+
+        return {
+
+            translateX: matrix.m41,
+            translateY: matrix.m42
+
+        };
+    };
+
+    const moveTile = (element, toLoc, fromLoc, newLocaton) =>{
         if (!solved) {
 
             element.style.transform = `translate(${emptyLoc.locationX}px, ${emptyLoc.locationY}px)`;
@@ -245,8 +234,13 @@
         }
     };
 
+    // check to see if the current image is next to the empty
+    const checkDistance = (fromX, fromY, toX, toY) =>{
+
+        return Math.abs(fromX - toX) + Math.abs(fromY - toY);
+    };
+
     const moveObjects = (e) => {
-        let checksum;
 
         if (e.target !== e.currentTarget) {
 
@@ -265,37 +259,28 @@
         e.stopPropagation();
     };
 
-    // check to see if images can move or not
-    const checkDistance = (fromX, fromY, toX, toY) => {
+    const compareAnswers = (array1, array2) =>{
 
-        return Math.abs(fromX - toX) + Math.abs(fromY - toY);
-    };
+      // compare array array1 with array2 by using
+        let compareArrays = array1.filter(function(valueArray1, index, obj){
+            let findMatch = array2.findIndex( function (valueArray2){
 
-    const compareAnswers = (array1, array2) => {
-
-      // This block will make the array of indexed that array b contains a elements
-        let compareArrays = array1.filter(function(value, index, obj) {
-
-            let index2 = array2.findIndex( function (element) {
-
-                  return value.x=== element.x && value.y === element.y && value.elementNumber === element.elementNumber;
+                  return valueArray1.x === valueArray2.x &&
+                         valueArray1.y === valueArray2.y &&
+                         valueArray1.elementNumber === valueArray2.elementNumber;
             });
 
-            return index2 > -1;
+            return findMatch > -1;
 
         });
 
-      //TODO
-      return (compareArrays.length !== array1.length) ? false : true;
+        return (compareArrays.length !== array1.length) ? false : true;
     };
 
+    const checkSolved = () =>{
+        let i = 1;
 
-    const checkSolved = () => {
-
-        i = 1;
-
-        allPuzzlePieces.map((puzzlePiece) => {
-
+        allPuzzlePieces.map((puzzlePiece) =>{
             currentPositions.push({x: getTransformValue(puzzlePiece).translateX, y: getTransformValue(puzzlePiece).translateY, elementNumber: i });
             i++;
         });
@@ -305,37 +290,16 @@
         solved = compareAnswers(currentPositions, correctAnswers);
 
         if(solved){
+            hiddenElement.classList.remove('hide-puzzle');
 
-            hiddenElement.classList.remove('hide');
-
-            allPuzzlePieces.map((puzzlePiece) => {
-                puzzlePiece.style.height =  `${boardSize/tileCount}px`;
-                puzzlePiece.style.width= `${boardSize/tileCount}px`;
+            allPuzzlePieces.map((puzzlePiece) =>{
+                puzzlePiece.style.height =  `${tileSize}px`;
+                puzzlePiece.style.width= `${tileSize}px`;
             });
         }
 
-        currentPositions = [];
-
+        currentPositions.length = [];
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     init();
 }
