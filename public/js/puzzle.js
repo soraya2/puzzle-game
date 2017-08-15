@@ -283,6 +283,7 @@
             currentPositions.push({x: getTransformValue(puzzlePiece).translateX, y: getTransformValue(puzzlePiece).translateY, elementNumber: i });
             i++;
         });
+        
         // remove the first element because this element is hidden
         currentPositions.shift();
 
