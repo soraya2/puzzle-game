@@ -1,6 +1,6 @@
 {
     "use strict";
-    
+
     // global variables
     const image = new Image(),
           puzzleBackground = document.querySelector(".puzzle-background"),
@@ -20,8 +20,8 @@
         positionXD = 0,
         posY = 0,
         posX = 0,
-        clickLoc = new Object(),    // current element
-        emptyLoc = new Object();    // empty spot where the img can go
+        clickLoc = new Object(), // current element
+        emptyLoc = new Object(); // empty spot where the img can go
         clickLoc.x = 0;
         clickLoc.y = 0;
         emptyLoc.x = 0;
@@ -43,7 +43,7 @@
     };
 
     const setBoard = () => {
-        tileCount = (Number(scale.value)===6) ? 5: Number(scale.value);
+        tileCount = (Number(scale.value) === 6) ? 5 : Number(scale.value);
         tileSize = boardSize / tileCount;
         correctAnswers.length = [];
 
@@ -121,6 +121,7 @@
         if(amount > 1 ){
 
             if( posY <= (boardSize/2) && tileCount >= 4){
+
                 posY += tileSize;
 
             }else if(tileCount>= 4){
@@ -135,10 +136,10 @@
                     posY += tileSize;
 
                 }else{
-                    
+
                     posY = 0;
                     posX += tileSize;
-                    
+
                 }
             }
         }
@@ -162,6 +163,7 @@
                 boardParts[i] = new Array(tileCount);
 
                 for (j = 0; j < tileCount; ++j) {
+
                     increase = true;
                     boardParts[i][j] = new Object();
 
@@ -243,7 +245,7 @@
 
     const moveObjects = (e) => {
 
-        if (e.target !== e.currentTarget) {
+        if (e.target !== e.currentTarget){
 
             clickLoc.x = getTransformValue(e.target).translateX / tileSize;
             clickLoc.y = getTransformValue(e.target).translateY / tileSize;
@@ -252,7 +254,7 @@
 
                 moveTile(e.target, emptyLoc, clickLoc, getTransformValue(e.target));
 
-                setTimeout(function(){
+                setTimeout(() =>{
                     checkSolved();
                 }, 400);
             }
@@ -263,8 +265,8 @@
     const compareAnswers = (array1, array2) =>{
 
       // compare array array1 with array2 by using
-        let compareArrays = array1.filter(function(valueArray1, index, obj){
-            let findMatch = array2.findIndex( function (valueArray2){
+        let compareArrays = array1.filter((valueArray1, index, obj) =>{
+            let findMatch = array2.findIndex( (valueArray2) => {
 
                   return valueArray1.x === valueArray2.x &&
                          valueArray1.y === valueArray2.y &&
@@ -285,7 +287,7 @@
             currentPositions.push({x: getTransformValue(puzzlePiece).translateX, y: getTransformValue(puzzlePiece).translateY, elementNumber: i });
             i++;
         });
-        
+
         // remove the first element because this element is hidden
         currentPositions.shift();
 
