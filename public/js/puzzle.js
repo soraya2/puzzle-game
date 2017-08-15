@@ -25,7 +25,6 @@
         emptyLoc.x = 0;
         emptyLoc.y = 0;
 
-
     const init = () => {
         puzzleBackground.addEventListener("click", moveObjects, false);
         scale.addEventListener("change", setBoard, false);
@@ -44,7 +43,7 @@
     const setBoard = () => {
         tileCount = (Number(scale.value)===6) ? 5: Number(scale.value);
         tileSize = boardSize / tileCount;
-        correctAnswers.length = 0;
+        correctAnswers.length = [];
 
         if (puzzleBackground) {
             while (puzzleBackground.firstChild) {
@@ -56,19 +55,19 @@
         imgPosition();
     };
 
-    // Using canvas api top cut the img up in pieces
+    // Using canvas to cut the image up in pieces
     const cutImageUp = () => {
         let imagePieces = [],
             PuzzleColls = tileCount,
             PuzzleRows = tileCount,
-            imgPieceWidth = tileSize,//img width should be equal to picture width / PuzzleColls
-            imgPieceHeigth = tileSize,//img height should be equal to picture width / PuzzleRows
+            imgPieceWidth = tileSize,
+            imgPieceHeigth = tileSize,
             canvas,
             context,
             yPosition,
             xPosition;
 
-        // slice img into 4 pieces 2 rows and 2 collumns
+        // slice img into pieces that are equal to tile count
         for(xPosition = 0; xPosition < PuzzleColls; xPosition++) {
             for(yPosition = 0; yPosition < PuzzleRows; yPosition++) {
 
@@ -134,9 +133,10 @@
                     posY += tileSize;
 
                 }else{
-
+                    
                     posY = 0;
                     posX += tileSize;
+                    
                 }
             }
         }
@@ -198,7 +198,6 @@
         emptyLoc.y = boardParts[tileCount - 1][tileCount - 1].y / tileSize;
         emptyLoc.locationX = boardParts[tileCount - 1][tileCount - 1].y;
         emptyLoc.locationY = boardParts[tileCount - 1][tileCount - 1].x;
-
         solved = false;
         increase = false;
         positionY = 0;
