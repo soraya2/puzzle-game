@@ -1,4 +1,6 @@
 {
+    "use strict";
+    
     // global variables
     const image = new Image(),
           puzzleBackground = document.querySelector(".puzzle-background"),
