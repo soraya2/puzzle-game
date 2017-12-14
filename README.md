@@ -1,5 +1,5 @@
 # 2 dimentional puzzle
-I wanted to challenge myself to make a 2 dimentional puzzle without libraries or frameworks.
+2d Puzzle in vanilla javascript with mulitple levels.
 
 Im always looking for ways to improve my work so if you have any suggestions feel free to create an issue.
 
@@ -11,7 +11,7 @@ https://puzzle-game-lnvrebtyuv.now.sh/
   - Clone this repository
 
   - Install packages
-    To install the packages run npm install in the commandline;\
+    To install the packages run npm install in the commandline:
 
     ```
      npm install
