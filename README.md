@@ -4,9 +4,7 @@
 Im always looking for ways to improve my work so if you have any suggestions feel free to create an issue.
 
 ## Live link
-https://puzzle-game-lnvrebtyuv.now.sh/
-
-(if de css doesn't load refresh the page)
+https://puzzle-game-lnvrebtyuv.now.sh/ (if de css doesn't load refresh the page)
 
 ## Getting started
 
