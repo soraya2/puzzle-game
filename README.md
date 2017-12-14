@@ -1,5 +1,5 @@
 # 2 dimentional puzzle
-2d Puzzle in vanilla javascript with mulitple levels.
+2d puzzle in vanilla javascript with mulitple levels.
 
 Im always looking for ways to improve my work so if you have any suggestions feel free to create an issue.
 
